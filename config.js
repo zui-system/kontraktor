@@ -26,10 +26,10 @@ window.MANDOR_CONFIG = {
   // Alamat Cloudflare Worker pembayaran iPaymu (lihat worker/PANDUAN-IPAYMU.md), contoh:
   // payGateway: "https://zui-bayar.namamu.workers.dev",
   // Kosongkan "" agar pelanggan Rupiah kembali memakai QRIS manual. Pelanggan Ringgit selalu memakai DuitNow manual.
-  payGateway: "",
+  payGateway: "https://zui-bayar.info-zuisystem.workers.dev",
   // Selama uji coba, hanya email di sini yang melihat tombol Bayar iPaymu; yang lain tetap QRIS manual.
   // Kosongkan [] agar semua pelanggan Rupiah memakai iPaymu.
-  payGatewayTesters: [],
+  payGatewayTesters: ["sahhori86@gmail.com"],
 
   // Bagian di bawah ini sama seperti sebelumnya. Salin dari config.js lama bila kamu sudah mengisinya.
   tagline: "Aplikasi Kontraktor",
