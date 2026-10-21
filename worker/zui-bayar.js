@@ -158,7 +158,8 @@ async function settle(env, id, trx) {
     const t = r.Data || {};
     if (String(t.ReferenceId || '') !== id) return { status: 'pay' };
     console.log('iPaymu status', id, 'trx', trx, 'Status', t.Status, t.StatusDesc || '', 'Amount', t.Amount);
-    const st = Number(t.Status), paid = st === 1 || st === 6, gone = st === -2 || st === 2;
+    // 1 = berhasil, 6 = berhasil belum settle, 7 = berhasil masuk escrow; -2 = kedaluwarsa, 2 = batal
+    const st = Number(t.Status), paid = st === 1 || st === 6 || st === 7, gone = st === -2 || st === 2;
     if (!paid && !gone) {
       if (!x.trx) await fsCommit(env, [{ update: { name: d.name, fields: toFields({ trx }) }, updateMask: { fieldPaths: ['trx'] }, currentDocument: { updateTime: d.updateTime } }]).catch(() => {});
       return { status: 'pay' };
