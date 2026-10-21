@@ -157,6 +157,7 @@ async function settle(env, id, trx) {
     const r = await ipaymu(env, '/api/v2/transaction', { transactionId: Number(trx) });
     const t = r.Data || {};
     if (String(t.ReferenceId || '') !== id) return { status: 'pay' };
+    console.log('iPaymu status', id, 'trx', trx, 'Status', t.Status, t.StatusDesc || '', 'Amount', t.Amount);
     const st = Number(t.Status), paid = st === 1 || st === 6, gone = st === -2 || st === 2;
     if (!paid && !gone) {
       if (!x.trx) await fsCommit(env, [{ update: { name: d.name, fields: toFields({ trx }) }, updateMask: { fieldPaths: ['trx'] }, currentDocument: { updateTime: d.updateTime } }]).catch(() => {});
