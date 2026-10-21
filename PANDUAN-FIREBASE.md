@@ -126,6 +126,6 @@ Setelah itu:
 
 - Pelanggan **Rupiah** membayar lewat iPaymu (QRIS, virtual account bank, e-wallet) dan paketnya **aktif otomatis** setelah lunas. Pelanggan **Ringgit** tetap memakai DuitNow + nomor referensi + cek admin seperti di atas.
 - Pembayaran diproses oleh Cloudflare Worker (gratis). API Key iPaymu dan kunci service account Firebase hanya disimpan sebagai Secret di Cloudflare, tidak di kode web.
-- Langkah lengkap (bisa dari HP): **`worker/PANDUAN-IPAYMU.md`**. Tambahan Firestore Rules: **`worker/firestore-rules-langganan.txt`**.
+- Langkah lengkap (bisa dari HP): **`worker/PANDUAN-IPAYMU.md`**. Firestore Rules tidak perlu diubah; salinannya ada di **`firestore.rules`**.
 - Selama `payGateway` di `config.js` masih kosong, aplikasi tetap memakai QRIS manual seperti versi 12.
 - Tombol **Aktifkan** dan **Atur** di **Admin langganan** tetap bisa dipakai sebagai cadangan.

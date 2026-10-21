@@ -78,16 +78,17 @@ Catatan:
 - Selama `IPAYMU_MODE` = `sandbox`, Worker hanya melayani email di `TEST_EMAILS`. Pelanggan lain tidak bisa membuat pembayaran uji coba yang mengaktifkan paket asli.
 - Kalau aplikasi juga dibuka dari alamat lain (misalnya `namamu.github.io`), tambahkan variabel Text `EXTRA_ORIGINS` berisi `https://namamu.github.io`.
 
-## E. Perbarui Firestore Rules
+## E. Firestore Rules (tidak perlu diubah)
 
-Rules ini mencegah pelanggan mengubah sendiri paket dan tanggal berakhir perusahaannya.
+Rules yang sekarang terpasang (disimpan juga di **`firestore.rules`** di repo ini) sudah mencegah pelanggan mengaktifkan paket sendiri:
 
-1. Firebase Console → **Firestore Database** → tab **Rules**.
-2. **Salin dulu seluruh isi rules yang sekarang** ke catatan sebagai cadangan.
-3. Buka file **`worker/firestore-rules-langganan.txt`** di repo ini dan ikuti empat bagiannya: tempel dua fungsi baru, lalu tambahkan syarat pada aturan `companies`, `subreqs`, dan `zconfig` yang sudah ada.
-4. Tekan **Publish**. Kalau muncul tanda error merah, baca nomor barisnya. Biasanya ada kurung `)` atau `&&` yang kurang. Kalau ragu, kembalikan rules dari cadangan di langkah 2 lalu kirimkan isi rules lama ke saya untuk digabungkan.
+- `companies`: pelanggan tidak bisa mengisi atau mengubah `plan`, `until`, `free`, dan `created_at`. Hanya `superAdmin()` yang bisa.
+- `subreqs`: pelanggan hanya bisa membuat permintaan manual (`status: 'wait'`, tanpa kolom `method`), jadi catatan pembayaran iPaymu tidak bisa dipalsukan. Mengubah atau menghapus hanya bisa dilakukan `superAdmin()`.
+- `zconfig` (harga): hanya `superAdmin()` yang bisa menulis.
 
-Cek setelah publish: buka aplikasi sebagai pemilik perusahaan biasa. Aplikasi harus berjalan seperti biasa (proyek, invoice, chat, halaman klien dan pekerja). Admin langganan tetap bisa menekan **Atur** dan **Aktifkan**.
+Worker menulis ke Firestore memakai service account, jadi tidak terhalang rules. Langkah ini bisa dilewati.
+
+Kalau suatu saat rules diubah, pastikan ketiga aturan di atas tetap ada.
 
 ## F. Isi URL callback di iPaymu
 
