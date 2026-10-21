@@ -1,0 +1,351 @@
+rules_version = '2';
+// Aturan keamanan Firestore untuk ZUI KONTRAKTOR.
+// Salin seluruh isi file ini ke Firebase Console → Firestore Database → Rules, lalu tekan Publish.
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    // ---------- fungsi bantu ----------
+    function signedIn() {
+      return request.auth != null &&
+        (request.auth.token.email_verified == true ||
+         request.auth.token.firebase.sign_in_provider == 'google.com');
+    }
+    function myEmail() { return request.auth.token.email.lower(); }
+    function memberPath(cid) { return /databases/$(db)/documents/companies/$(cid)/members/$(request.auth.uid); }
+    function member(cid) { return signedIn() && exists(memberPath(cid)); }
+    function role(cid) { return get(memberPath(cid)).data.role; }
+    function writer(cid) { return member(cid) && role(cid) in ['owner', 'admin', 'staff']; }
+    function manager(cid) { return member(cid) && role(cid) in ['owner', 'admin']; }
+    function owner(cid) { return member(cid) && role(cid) == 'owner'; }
+    // data uang: hanya pemilik & admin (lihat juga koleksi fin di bawah)
+    function finColl(c) { return c in ['tx', 'invoices', 'quotes', 'bills', 'payroll', 'kasbon']; }
+
+    // ---------- langganan ----------
+    // Akun admin ZUI yang boleh mengaktifkan langganan (samakan dengan superAdmins di config.js).
+    function superAdmin() { return signedIn() && myEmail() in ['admin.zuisystem@gmail.com']; }
+    function coData(cid) { return get(/databases/$(db)/documents/companies/$(cid)).data; }
+    // masa percobaan 14 hari dihitung dari pembuatan perusahaan (paling awal 15 Okt 2026), lalu tenggang 3 hari
+    function trialStart(c) {
+      let launch = timestamp.date(2026, 10, 15);
+      let made = c.get('created_at', launch);
+      return made > launch ? made : launch;
+    }
+    function activeCo(cid) {
+      let c = coData(cid);
+      let end = c.get('until', null) != null ? c.until : trialStart(c) + duration.value(14, 'd');
+      return c.get('free', false) == true || request.time < end + duration.value(3, 'd');
+    }
+    // paket efektif: gratis/percobaan = bisnis
+    function planOf(cid) {
+      let c = coData(cid);
+      return (c.get('free', false) == true || c.get('until', null) == null) ? 'business' : c.get('plan', 'starter');
+    }
+
+    // Siapa yang boleh membuat perusahaan baru.
+    // Bawaan: semua akun terverifikasi. Untuk membatasi, ganti baris return, contoh:
+    //   return signedIn() && myEmail() in ['info.zuisystem@gmail.com'];
+    function canCreate() { return signedIn(); }
+
+    // ---------- perusahaan ----------
+    match /companies/{cid} {
+      allow read: if member(cid) || superAdmin();
+      // pemilik tidak bisa mengisi/mengubah paket, masa aktif, atau tanggal pembuatan sendiri
+      allow create: if canCreate() && request.resource.data.owner == request.auth.uid &&
+        request.resource.data.created_at == request.time &&
+        !request.resource.data.keys().hasAny(['plan', 'until', 'free']);
+      allow update: if superAdmin() || (owner(cid) && request.resource.data.owner == resource.data.owner &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['plan', 'until', 'free', 'created_at']));
+      allow delete: if owner(cid);
+
+      // anggota tim
+      match /members/{uid} {
+        // anggota melihat tim; orang yang diundang boleh mengecek dokumen keanggotaannya sendiri
+        allow read: if member(cid) || (signedIn() && uid == request.auth.uid) || superAdmin();
+        allow create: if signedIn() && uid == request.auth.uid && (
+          // pemilik saat perusahaan dibuat
+          (request.resource.data.role == 'owner' &&
+           getAfter(/databases/$(db)/documents/companies/$(cid)).data.owner == request.auth.uid) ||
+          // menerima undangan dengan peran yang sama persis
+          (request.resource.data.role in ['admin', 'staff', 'viewer'] &&
+           get(/databases/$(db)/documents/invites/$(myEmail())/companies/$(cid)).data.role == request.resource.data.role)
+        );
+        allow update: if
+          // pemilik/admin mengubah peran anggota lain (admin tidak bisa mengangkat admin)
+          (manager(cid) && uid != request.auth.uid && resource.data.role != 'owner' &&
+           request.resource.data.role in ['admin', 'staff', 'viewer'] &&
+           (role(cid) == 'owner' || (resource.data.role != 'admin' && request.resource.data.role != 'admin'))) ||
+          // anggota mengubah data dirinya sendiri tanpa mengubah peran
+          (uid == request.auth.uid && request.resource.data.role == resource.data.role);
+        allow delete: if owner(cid) ||
+          (manager(cid) && resource.data.role != 'owner' && resource.data.role != 'admin') ||
+          (uid == request.auth.uid && resource.data.role != 'owner');
+      }
+
+      // data umum aplikasi (proyek, tugas, absensi, material, dll.)
+      match /records/{rid} {
+        allow read: if member(cid);
+        // profil perusahaan (nama, NPWP, rekening bank di invoice) hanya boleh diubah pemilik/admin;
+        // data uang lama yang belum dipindah ke fin juga hanya boleh disentuh pemilik/admin
+        // menyimpan hanya bisa selama percobaan/langganan aktif; membaca tetap bisa
+        allow create, update: if writer(cid) && activeCo(cid) && (rid != 'meta~settings' || manager(cid)) &&
+          (!finColl(request.resource.data.coll) || manager(cid)) &&
+          (resource == null || !finColl(resource.data.coll) || manager(cid));
+        allow delete: if writer(cid) && activeCo(cid) && (rid != 'meta~settings' || manager(cid)) &&
+          (!finColl(resource.data.coll) || manager(cid));
+      }
+
+      // data uang (transaksi, invoice, penawaran, tagihan, gaji, kasbon) + upah/nilai kontrak
+      match /fin/{rid} {
+        allow read: if manager(cid);
+        allow write: if manager(cid) && activeCo(cid);
+      }
+
+      // daftar undangan yang terlihat oleh tim
+      match /invites/{email} {
+        allow read: if member(cid);
+        allow create, update: if manager(cid) && (request.resource.data.role != 'admin' || owner(cid));
+        allow delete: if manager(cid) || (signedIn() && email == myEmail());
+      }
+    }
+
+    // undangan yang bisa dibaca orang yang diundang
+    match /invites/{email}/companies/{cid} {
+      allow read: if signedIn() && email == myEmail();
+      allow create, update: if manager(cid) && email == email.lower() &&
+        request.resource.data.role in ['admin', 'staff', 'viewer'] &&
+        // hanya pemilik yang boleh mengundang admin baru
+        (request.resource.data.role != 'admin' || owner(cid));
+      allow delete: if (signedIn() && email == myEmail()) || manager(cid);
+    }
+
+    // daftar perusahaan milik setiap akun
+    match /users/{uid}/companies/{cid} {
+      allow read: if signedIn() && uid == request.auth.uid;
+      allow create: if (signedIn() && uid == request.auth.uid &&
+                        existsAfter(/databases/$(db)/documents/companies/$(cid)/members/$(uid))) ||
+                       manager(cid);
+      allow update: if (signedIn() && uid == request.auth.uid) || manager(cid);
+      allow delete: if (signedIn() && uid == request.auth.uid) || manager(cid);
+    }
+    // ---------- halaman klien (link tanpa login) ----------
+    // Dokumen shares/{token} berisi ringkasan proyek yang aman untuk klien.
+    // Siapa pun yang memegang link (token acak panjang) bisa membacanya selama link aktif.
+    match /shares/{token} {
+      function sh() { return get(/databases/$(db)/documents/shares/$(token)).data; }
+      function liveShare() { return sh().active == true; }
+      function team() { return writer(sh().cid); }
+
+      allow get: if true;
+      allow list: if false;
+      // halaman klien: paket Bisnis
+      allow create: if manager(request.resource.data.cid) && request.resource.data.active == true &&
+        activeCo(request.resource.data.cid) && planOf(request.resource.data.cid) == 'business';
+      allow update: if writer(resource.data.cid) &&
+        request.resource.data.cid == resource.data.cid &&
+        request.resource.data.pid == resource.data.pid &&
+        (request.resource.data.active == resource.data.active || manager(resource.data.cid));
+      allow delete: if manager(resource.data.cid);
+
+      // laporan harian + foto untuk klien
+      match /daily/{id} {
+        allow read: if liveShare() || team();
+        allow write: if team();
+      }
+
+      // chat: klien menulis sebagai 'client', hanya pemilik/admin yang membalas sebagai 'team'
+      match /msgs/{id} {
+        function okMsg() {
+          let d = request.resource.data;
+          return d.keys().hasOnly(['from', 'name', 'text', 'img', 'ts']) &&
+            d.ts == request.time &&
+            d.name is string && d.name.size() <= 80 &&
+            d.text is string && d.text.size() <= 2000 &&
+            d.img is string && d.img.size() <= 400000 &&
+            (d.text.size() > 0 || d.img.size() > 0);
+        }
+        allow read: if liveShare() || team();
+        allow create: if okMsg() && (
+          (liveShare() && request.resource.data.from == 'client') ||
+          (manager(sh().cid) && request.resource.data.from == 'team'));
+        allow update: if false;
+        allow delete: if manager(sh().cid);
+      }
+
+      // persetujuan + tanda tangan dari klien, diproses oleh aplikasi tim
+      match /acts/{id} {
+        allow create: if liveShare() &&
+          request.resource.data.keys().hasOnly(['type', 'id', 'name', 'img', 'date']) &&
+          request.resource.data.type in ['quote', 'change', 'bast'] &&
+          request.resource.data.id is string && request.resource.data.id.size() <= 60 &&
+          request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 100 &&
+          request.resource.data.img is string && request.resource.data.img.size() <= 300000;
+        allow read, delete: if team();
+        allow update: if false;
+      }
+    }
+    // ---------- halaman pekerja (link pribadi + PIN) ----------
+    // wshares/{token}            : publik (nama perusahaan & pekerja, aktif/tidak)
+    // wsec/{token}               : rahasia tim (hash PIN + kunci sk)
+    // wshares/{token}/pin/{hash} : berisi sk; hanya bisa ditemukan dengan PIN yang benar
+    // wshares/{token}/p/{sk}     : data pribadi pekerja + absen, laporan, pengajuan, chat di bawahnya
+    match /wsec/{token} {
+      allow read: if writer(resource.data.cid);
+      allow create: if manager(request.resource.data.cid);
+      allow update: if manager(resource.data.cid) && request.resource.data.cid == resource.data.cid;
+      allow delete: if manager(resource.data.cid);
+    }
+    match /wshares/{token} {
+      function ws() { return get(/databases/$(db)/documents/wshares/$(token)).data; }
+      function liveW() { return ws().active == true; }
+      function teamW() { return writer(ws().cid); }
+      function mgrW() { return manager(ws().cid); }
+      function legacyW() { return liveW() && ws().get('v', 1) != 2; }
+      function onlyStatus() { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'reply']) && request.resource.data.status in ['ok', 'no']; }
+      function okChk() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['type', 'date', 'ts', 'lat', 'lng', 'acc', 'dist', 'far', 'pid', 'pname', 'selfie', 'status']) &&
+          d.type in ['in', 'out'] && d.status == 'wait' && d.ts == request.time &&
+          d.selfie is string && d.selfie.size() > 1000 && d.selfie.size() <= 250000;
+      }
+      function okRep() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['date', 'pid', 'pname', 'text', 'photos', 'ts', 'status']) &&
+          d.status == 'wait' && d.ts == request.time && d.text is string && d.text.size() <= 2000 &&
+          d.photos is list && d.photos.size() <= 3;
+      }
+      function okReq() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['type', 'amount', 'date', 'note', 'ts', 'status']) &&
+          d.type in ['kasbon', 'izin', 'sakit'] && d.status == 'wait' && d.amount is number && d.amount >= 0 &&
+          d.note is string && d.note.size() <= 500 && d.ts == request.time;
+      }
+      function okUp() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['taskId', 'status', 'note', 'photo', 'ts']) && d.status in ['doing', 'done'] &&
+          d.note is string && d.note.size() <= 500 && d.photo is string && d.photo.size() <= 300000;
+      }
+      function okMsg() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['from', 'name', 'text', 'img', 'ts']) && d.ts == request.time &&
+          d.name is string && d.name.size() <= 80 && d.text is string && d.text.size() <= 2000 &&
+          d.img is string && d.img.size() <= 400000 && (d.text.size() > 0 || d.img.size() > 0);
+      }
+
+      allow get: if true;
+      allow list: if false;
+      // halaman pekerja: paket Pro ke atas
+      allow create: if manager(request.resource.data.cid) && request.resource.data.active == true &&
+        activeCo(request.resource.data.cid) && planOf(request.resource.data.cid) in ['pro', 'business'];
+      allow update: if manager(resource.data.cid) &&
+        request.resource.data.cid == resource.data.cid && request.resource.data.wid == resource.data.wid;
+      allow delete: if manager(resource.data.cid);
+
+      // kunci PIN: dokumen bernama hash PIN, isinya sk
+      match /pin/{h} {
+        allow get: if liveW() || mgrW();
+        allow list: if false;
+        allow write: if mgrW();
+      }
+
+      // data pribadi pekerja: hanya dengan sk yang benar (didapat dari PIN) atau oleh tim
+      match /p/{sk} {
+        function okSk() { return liveW() && get(/databases/$(db)/documents/wsec/$(token)).data.sk == sk; }
+        allow get: if okSk() || teamW();
+        allow list: if false;
+        allow create, update: if teamW() && get(/databases/$(db)/documents/wsec/$(token)).data.sk == sk;
+        allow delete: if mgrW();
+
+        match /checks/{id} {
+          allow read: if okSk() || teamW();
+          allow create: if mgrW() || (okSk() && okChk());
+          allow update: if teamW() && onlyStatus();
+          allow delete: if teamW();
+        }
+        match /reports/{id} {
+          allow read: if okSk() || teamW();
+          allow create: if mgrW() || (okSk() && okRep());
+          allow update: if teamW() && onlyStatus();
+          allow delete: if teamW();
+        }
+        match /reqs/{id} {
+          allow read: if okSk() || teamW();
+          allow create: if mgrW() || (okSk() && okReq());
+          allow update: if teamW() && onlyStatus();
+          allow delete: if teamW();
+        }
+        match /taskups/{id} {
+          allow create: if mgrW() || (okSk() && okUp());
+          allow read, delete: if teamW();
+          allow update: if false;
+        }
+        // chat: pekerja menulis sebagai 'worker', hanya pemilik/admin yang membalas sebagai 'team'
+        match /msgs/{id} {
+          allow read: if okSk() || teamW();
+          allow create: if (okMsg() && ((okSk() && request.resource.data.from == 'worker') ||
+                                        (mgrW() && request.resource.data.from == 'team'))) ||
+                           mgrW();
+          allow update: if false;
+          allow delete: if mgrW();
+        }
+      }
+
+      // jalur lama: tetap jalan sampai pemilik/admin membuka aplikasi baru (link otomatis dipindah),
+      // setelah itu (v == 2) pekerja hanya bisa menulis lewat jalur p/{sk}
+      match /checks/{id} { allow read: if legacyW() || teamW(); allow delete: if teamW(); allow update: if teamW() && onlyStatus(); allow create: if legacyW() && okChk(); }
+      match /reports/{id} { allow read: if legacyW() || teamW(); allow delete: if teamW(); allow update: if teamW() && onlyStatus(); allow create: if legacyW() && okRep(); }
+      match /reqs/{id} { allow read: if legacyW() || teamW(); allow delete: if teamW(); allow update: if teamW() && onlyStatus(); allow create: if legacyW() && okReq(); }
+      match /taskups/{id} { allow read, delete: if teamW(); allow create: if legacyW() && okUp(); allow update: if false; }
+      match /msgs/{id} { allow read: if legacyW() || teamW(); allow delete: if mgrW(); allow update: if false;
+        allow create: if okMsg() && ((legacyW() && request.resource.data.from == 'worker') || (mgrW() && request.resource.data.from == 'team')); }
+    }
+
+    // ---------- chat Langganan: pemilik/admin perusahaan <-> admin ZUI ----------
+    // support/{cid}: ringkasan percakapan (pesan terakhir, belum dibaca)
+    // support/{cid}/msgs/{id}: isi pesan, boleh berisi foto bukti bayar (dikecilkan di HP)
+    match /support/{cid} {
+      function okHead() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['cid', 'coName', 'byEmail', 'last', 'at', 'from', 'unread', 'seen']) &&
+          d.cid == cid && d.from == 'u' && d.unread == true && d.seen == true && d.at == request.time &&
+          d.coName is string && d.coName.size() <= 120 && d.byEmail is string && d.byEmail.size() <= 120 &&
+          d.last is string && d.last.size() <= 120;
+      }
+      allow read: if manager(cid) || superAdmin();
+      allow create: if superAdmin() || (manager(cid) && okHead());
+      allow update: if superAdmin() || (manager(cid) && okHead()) ||
+        (manager(cid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['seen']) && request.resource.data.seen == true);
+      allow delete: if superAdmin();
+
+      match /msgs/{id} {
+        allow read: if manager(cid) || superAdmin();
+        allow create: if request.resource.data.keys().hasOnly(['from', 'name', 'text', 'img', 'at', 'uid']) &&
+          request.resource.data.at == request.time && request.resource.data.uid == request.auth.uid &&
+          request.resource.data.name is string && request.resource.data.name.size() <= 80 &&
+          request.resource.data.text is string && request.resource.data.text.size() <= 2000 &&
+          request.resource.data.img is string && request.resource.data.img.size() <= 400000 &&
+          (request.resource.data.text.size() > 0 || request.resource.data.img.size() > 0) &&
+          ((manager(cid) && request.resource.data.from == 'u') || (superAdmin() && request.resource.data.from == 'a'));
+        allow update: if false;
+        allow delete: if superAdmin();
+      }
+    }
+
+    // ---------- langganan: harga, QRIS/DuitNow, dan permintaan aktivasi ----------
+    // Pembayaran iPaymu ditulis Cloudflare Worker (worker/zui-bayar.js) memakai service account,
+    // jadi tidak lewat aturan ini. Pelanggan hanya bisa membuat permintaan manual (status 'wait',
+    // tanpa kolom method), dan tidak bisa mengubah permintaan atau paket perusahaannya sendiri.
+    match /zconfig/{id} {
+      allow read: if signedIn();
+      allow write: if superAdmin();
+    }
+    match /subreqs/{id} {
+      allow create: if manager(request.resource.data.cid) && request.resource.data.status == 'wait' &&
+        request.resource.data.by == request.auth.uid &&
+        request.resource.data.keys().hasOnly(['cid', 'coName', 'plan', 'months', 'amount', 'cur', 'ref', 'by', 'byEmail', 'status', 'at']) &&
+        request.resource.data.get('cur', 'IDR') in ['IDR', 'MYR'] &&
+        request.resource.data.plan in ['starter', 'pro', 'business'] && request.resource.data.months in [1, 6, 12];
+      allow read: if superAdmin() || manager(resource.data.cid);
+      allow update, delete: if superAdmin();
+    }
+  }
+}
