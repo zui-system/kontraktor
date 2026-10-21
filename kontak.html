@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kontak &amp; Alamat · ZUI Kontraktor</title>
+<meta name="description" content="Kontak &amp; Alamat ZUI Kontraktor, dikelola oleh ZUI System, PT. Zaor Utama Indonesia.">
+<link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+
+/* Halaman legal ZUI Kontraktor: satu kolom dokumen, tab antar dokumen menempel di atas */
+:root{
+  --bg:#ECEEEA;--surface:#FBFBF8;--ink:#1B2333;--muted:#5E6676;--line:#D5D9D1;--soft:#E3E7DF;
+  --accent:#F2B01E;--onaccent:#1B2333;--info:#2A5A9C;--warn:#8F6200;
+  --f-head:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+  --f-body:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141922;--surface:#1C2330;--ink:#E8ECF2;--muted:#9AA3B3;--line:#2D3647;--soft:#252D3C;--info:#82ADE3;--warn:#E5B24A;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141922;--surface:#1C2330;--ink:#E8ECF2;--muted:#9AA3B3;--line:#2D3647;--soft:#252D3C;--info:#82ADE3;--warn:#E5B24A;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.65 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:720px;margin:0 auto;padding-block:28px 56px}
+.hd{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.lg{width:40px;height:40px;border-radius:10px;background:#1B2333;border:1px solid var(--line);display:grid;place-items:center;flex:none}
+.lg svg{width:24px;height:24px;display:block;overflow:visible}
+.lg .z{fill:none;stroke:#fff;stroke-width:11;stroke-linecap:round;stroke-linejoin:round}.lg .u{fill:#F2B01E}
+.hd b{font-family:var(--f-head);font-size:20px;letter-spacing:.1em}
+.hd span{display:block;font-size:12.5px;color:var(--muted);margin-top:-2px}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding-block:10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.tabs a{white-space:nowrap;font-weight:600;font-size:15px;text-decoration:none;color:var(--muted);padding:7px 14px;border-radius:6px;border:1px solid var(--line);background:var(--surface)}
+.tabs a[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.draft{font-size:13.5px;line-height:1.5;color:var(--warn);background:var(--soft);border:1px dashed var(--warn);border-radius:6px;padding:10px 12px;margin:16px 0 0}
+section{padding-top:18px;scroll-margin-top:56px}
+h1{font-family:var(--f-head);font-weight:700;font-size:34px;line-height:1.1;margin:8px 0 2px;text-wrap:balance}
+.eff{font-size:13.5px;color:var(--muted);margin:0 0 14px}
+h2{font-family:var(--f-head);font-weight:700;font-size:21px;line-height:1.2;margin:26px 0 6px;text-wrap:balance}
+p,li{max-width:68ch}
+p{margin:0 0 10px}
+ul{margin:0 0 10px;padding-left:20px}
+li{margin-bottom:4px}
+.ph{background:rgba(242,176,30,.22);border-radius:3px;padding:0 3px}
+.ct{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-top:6px}
+.ct code{font:600 15px var(--f-body);user-select:all}
+.ct button{font:600 13px var(--f-body);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:99px;padding:4px 12px;cursor:pointer}
+a{color:var(--info)}
+:focus-visible{outline:2px solid var(--info);outline-offset:2px}
+.tw{overflow-x:auto;margin:6px 0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600}
+tbody tr:last-child td{border-bottom:0}
+.kv{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:0;margin:8px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.kv dt,.kv dd{margin:0;padding:11px 14px;border-bottom:1px solid var(--line)}
+.kv dt{color:var(--muted);font-size:14px;font-weight:600}
+.kv dt:last-of-type,.kv dd:last-of-type{border-bottom:0}
+.kv code{font:600 15px var(--f-body);user-select:all}
+.kv button{font:600 12px var(--f-body);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:99px;padding:2px 10px;margin-left:6px;cursor:pointer}
+@media (max-width:520px){.kv{grid-template-columns:1fr}.kv dt{border-bottom:0;padding-bottom:0}}
+.key{font-weight:600;border-left:3px solid var(--accent);background:var(--surface);padding:10px 14px;border-radius:0 6px 6px 0}
+.ft{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.back{display:inline-block;font-size:14px;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:14px}
+.back:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="./">← Kembali ke aplikasi</a>
+  <div class="hd">
+    <div class="lg"><svg viewBox="0 0 100 100"><path class="z" d="M24 20H76L24 68H76"/><rect class="u" x="24" y="84" width="52" height="7" rx="3.5"/></svg></div>
+    <div><b>ZUI KONTRAKTOR</b><span>Kelola Rapi &amp; Proyek Pasti</span></div>
+  </div>
+  <nav class="tabs" aria-label="Dokumen"><a href="terms.html">Syarat</a><a href="privacy.html">Privasi</a><a href="refund.html">Pengembalian Dana</a><a href="kontak.html" aria-current="true">Kontak</a></nav>
+  <section id="kontak">
+    <h1>Kontak &amp; Alamat</h1>
+    <p class="eff">ZUI Kontraktor versi 26.01</p>
+    <p>ZUI Kontraktor dikelola oleh ZUI System, PT. Zaor Utama Indonesia.</p>
+    <dl class="kv">
+      <dt>Perusahaan</dt><dd>PT. Zaor Utama Indonesia</dd>
+      <dt>Alamat</dt><dd>Dsn. Togur Dajah, Sotabar, Pasean,<br>Pamekasan, Jawa Timur 69356<br>Indonesia</dd>
+      <dt>Bantuan &amp; pengembalian dana</dt><dd><code>support@zuisystem.com</code> <button type="button" data-copy="support@zuisystem.com">Salin</button></dd>
+      <dt>Informasi umum &amp; kerja sama</dt><dd><code>info@zuisystem.com</code> <button type="button" data-copy="info@zuisystem.com">Salin</button></dd>
+      <dt>WhatsApp</dt><dd><code>+62 882-0007-49699</code> <button type="button" data-copy="+62882000749699">Salin</button></dd>
+      <dt>Jam layanan</dt><dd>Setiap hari, 08.00–22.00 WIB</dd>
+      <dt>Situs aplikasi</dt><dd>kontraktor.zuisystem.com</dd>
+    </dl>
+  </section>
+  <p class="ft">© 2026 ZUI System · PT. Zaor Utama Indonesia · Dsn. Togur Dajah, Sotabar, Pasean, Pamekasan, Jawa Timur 69356</p>
+</div>
+<script>
+document.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){
+  var t=b.dataset.copy,c=b.previousElementSibling,done=function(){b.textContent='Tersalin';setTimeout(function(){b.textContent='Salin'},1500)},
+  sel=function(){var r=document.createRange();r.selectNodeContents(c);var s=getSelection();s.removeAllRanges();s.addRange(r)};
+  try{navigator.clipboard.writeText(t).then(done,sel)}catch(e){sel()}})});
+</script>
+</body>
+</html>
