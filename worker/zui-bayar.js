@@ -266,9 +266,8 @@ async function fs(env, path, init) {
   if (r.status === 404 && (!init || !init.method)) return null;
   const out = await r.json().catch(() => ({}));
   if (!r.ok) {
-    const e = err(500, 'Firestore: ' + ((out.error && out.error.message) || r.status));
-    e.conflict = ['FAILED_PRECONDITION', 'ABORTED', 'ALREADY_EXISTS'].includes(out.error && out.error.status);
-    throw e;
+    throw Object.assign(err(500, 'Firestore: ' + ((out.error && out.error.message) || r.status)),
+      { conflict: ['FAILED_PRECONDITION', 'ABORTED', 'ALREADY_EXISTS'].includes(out.error && out.error.status) });
   }
   return out;
 }
@@ -329,7 +328,7 @@ function addMonths(t, n) {
   d.setUTCDate(Math.min(day, new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate()));
   return d.getTime() - off;
 }
-function err(status, message) { const e = new Error(message); e.status = status; return e; }
+function err(status, message) { return Object.assign(new Error(message), { status, conflict: false }); }
 function corsHeaders(req, env) {
   const origin = req.headers.get('origin') || '';
   const allowed = [new URL(env.APP_URL || 'https://kontraktor.zuisystem.com/').origin].concat(list(env.EXTRA_ORIGINS));
