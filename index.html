@@ -267,6 +267,13 @@ label.f input,label.f select,label.f textarea{color:var(--ink);font-weight:400;f
 .authcard .seg{margin:14px 0 16px}
 .autherr{color:var(--neg);font-weight:600;min-height:22px;margin:8px 0}
 .authcard .small{font-size:13.5px}
+.authcard .small a,.legal a,.legal-l a{color:var(--info)}
+.legal{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+.legal nav,.legal-l{display:flex;flex-wrap:wrap;gap:4px 8px}
+.legal p{margin:6px 0 0;font-size:11.5px}
+.about dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0 0 12px;font-size:14.5px}
+.about dt{color:var(--muted)}.about dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.legal-l{font-size:14px}
 .flow-step{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line)}
 .flow-step .dot{flex:none;width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;border:2px solid var(--line);color:var(--muted)}
 .flow-step.done .dot{background:var(--pos);border-color:var(--pos);color:#fff}
@@ -364,10 +371,11 @@ label.btn:focus-within{outline:2px solid var(--info);outline-offset:2px}
 #spl .il .hk{animation:splDrop 2s 7s ease-in-out both}
 #spl .dt{position:absolute;left:0;bottom:max(7.22vw,calc(min(55vw,34vh)*.394));width:5px;height:5px;margin:0 0 -2.5px -2.5px;border-radius:50%;background:var(--info);box-shadow:0 0 6px var(--info),0 0 12px var(--info);opacity:0;animation:splRun 5s 5s linear forwards}
 #spl .il .bl{animation:splLit .5s 7.6s ease-out forwards,splBlink 1s 8.1s steps(2) infinite}
+#spl .co{position:absolute;left:0;right:0;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:2;text-align:center;font-family:var(--f-body);font-size:10.5px;letter-spacing:.12em;color:var(--muted);animation:splUp 1s 4.6s ease-out both}
 #spl .sp{display:none;width:38px;height:38px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:splSpin .8s linear infinite}
 #spl .ld{display:none;font-family:var(--f-body);font-size:12px;color:var(--muted)}
 #spl.rl{transition-duration:.3s}
-#spl.rl .wr,#spl.rl .il,#spl.rl .dt{display:none}
+#spl.rl .wr,#spl.rl .il,#spl.rl .dt,#spl.rl .co{display:none}
 #spl.rl .sp,#spl.rl .ld{display:block}
 @keyframes splIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:none}}
 @keyframes splDraw{to{stroke-dashoffset:0}}
@@ -468,7 +476,7 @@ label.btn:focus-within{outline:2px solid var(--info);outline-offset:2px}
 <rect class="w b" x="305" y="90" width="10" height="5" filter="url(#splgl)" style="animation-delay:8.2s"/><rect class="w r" x="323" y="110" width="10" height="5" filter="url(#splgl)" style="animation-delay:8.6s"/><rect class="w y" x="305" y="150" width="10" height="5" filter="url(#splgl)" style="animation-delay:8.8s"/><rect class="w b" x="323" y="170" width="10" height="5" filter="url(#splgl)" style="animation-delay:9s"/><rect class="w r" x="352" y="168" width="18" height="5" filter="url(#splgl)" style="animation-delay:9.2s"/>
 <path class="s d" pathLength="1" style="animation-delay:6.4s" d="M150 200L154 190L158 200M160 200L164 190L168 200"/><circle class="w y bl" cx="158" cy="184" r="1.6" filter="url(#splgl)"/>
 <path class="s d" pathLength="1" style="animation-delay:5s" d="M-700 200H1100"/></svg><i class="dt"></i>
-<div class="sp"></div><div class="ld" id="spld">Memuat…</div></div>
+<div class="co">PT. Zaor Utama Indonesia</div><div class="sp"></div><div class="ld" id="spld">Memuat…</div></div>
 <script>(function(){window.splEnd=function(){var e=document.getElementById('spl');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(function(){e.remove()},900)};
 var nv=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0],again=false;
 try{again=sessionStorage.getItem('zui.spl')==='1'||(nv&&nv.type==='reload');sessionStorage.setItem('zui.spl','1')}catch(e){again=nv&&nv.type==='reload'}
@@ -1078,7 +1086,7 @@ function authErr(m,html){const e=$('#autherr');if(e){if(html)e.innerHTML=html;el
 function authShell(inner,withLang){
   const lg=Object.entries(LANGS).map(([k,v])=>_h`<option value="${k}"${LANG===k?' selected':''}>${v}</option>`).join('');
   const a=$('#auth');a.hidden=false;a.classList.remove('land');LANDVIEW=false;
-  a.innerHTML=`<div class="authcard"><div class="toprow"><span class="brand"><i></i>${esc(APP_NAME)}</span><button type="button" class="ib inst" onclick="install()" style="display:none">⬇ Instal</button><select data-set="lang" aria-label="Language">${lg}</select></div><div class="tape" aria-hidden="true"></div>${LANDING_ON&&!S?`<button class="btn sm" data-act="landing" style="margin-top:14px">← ${_tr('Halaman depan')}</button>`:''}${inner}</div>`;
+  a.innerHTML=`<div class="authcard"><div class="toprow"><span class="brand"><i></i>${esc(APP_NAME)}</span><button type="button" class="ib inst" onclick="install()" style="display:none">⬇ Instal</button><select data-set="lang" aria-label="Language">${lg}</select></div><div class="tape" aria-hidden="true"></div>${LANDING_ON&&!S?`<button class="btn sm" data-act="landing" style="margin-top:14px">← ${_tr('Halaman depan')}</button>`:''}${inner}<div class="legal"><nav>${legalLinks()}</nav><p>ZUI Kontraktor v${APP_VER} · ${APP_CO}</p></div></div>`;
 }
 function showSetup(){
   authShell(_h`<h1>Aplikasi belum dikonfigurasi</h1><p class="muted">Isi data project Firebase di file config.js, lalu muat ulang halaman. Langkah lengkapnya ada di PANDUAN-FIREBASE.md.</p>`);
@@ -1104,6 +1112,7 @@ function showAuth(tab){zr();setTimeout(instShow,0);
   ${ENABLE_GOOGLE&&(tab==='login'||tab==='register')?_h`<div style="margin-top:12px"><button class="btn block" data-act="google">Masuk dengan Google</button></div>`:''}
   ${tab==='login'?_h`<div style="margin-top:12px"><button class="btn sm" data-act="auth-tab" data-v="forgot">Lupa kata sandi?</button></div>`:''}
   ${tab==='forgot'?_h`<div style="margin-top:12px"><button class="btn sm" data-act="auth-tab" data-v="login">Kembali ke Masuk</button></div>`:''}
+  ${tab==='register'?`<p class="muted small" style="margin:14px 0 0">${Lw('Dengan mendaftar, kamu menyetujui <a href="terms.html" target="_blank" rel="noopener">Syarat Layanan</a> dan <a href="privacy.html" target="_blank" rel="noopener">Kebijakan Privasi</a>.','By signing up, you agree to the <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.','Dengan mendaftar, anda bersetuju dengan <a href="terms.html" target="_blank" rel="noopener">Syarat Perkhidmatan</a> dan <a href="privacy.html" target="_blank" rel="noopener">Dasar Privasi</a>.')}</p>`:''}
   <p class="muted small" style="margin:14px 0 0">Data perusahaan disimpan di server dan hanya bisa dilihat anggota tim yang kamu undang.</p>`);
 }
 function showCheckEmail(email){
@@ -1125,6 +1134,8 @@ async function showCompanySetup(){
   <div class="actions"><button class="btn" data-act="check-invites">Cek undangan</button><button class="btn" data-act="logout">Keluar dari akun</button></div>`);
 }
 
+const APP_VER='26.01',APP_CO='PT. Zaor Utama Indonesia';
+const legalLinks=()=>[['terms.html',Lw('Syarat Layanan','Terms of Service','Syarat Perkhidmatan')],['privacy.html',Lw('Kebijakan Privasi','Privacy Policy','Dasar Privasi')],['refund.html',Lw('Pengembalian Dana','Refund Policy','Pemulangan Wang')],['kontak.html',Lw('Kontak','Contact','Hubungi')]].map(([h,t])=>`<a href="${h}" target="_blank" rel="noopener">${t}</a>`).join('<span aria-hidden="true">·</span>');
 const LANDING_ON=false;/* halaman depan/iklan pindah ke web Zui */
 const PCFG=Object.assign({trialDays:14,yearlyMonths:10,whatsapp:'',email:''},_CFG.pricing||{});
 let LANDVIEW=false,LAND_YEARLY=false;
@@ -1587,7 +1598,10 @@ function viewPengaturan(){
     <div class="btns start"><button class="btn primary" type="submit">Simpan pengaturan</button></div>
   </form>
   <div class="panel section" style="padding:16px"><h2 style="font-size:22px;margin-bottom:6px">Data</h2><p class="muted" style="margin:0 0 12px">Data tersimpan di server dan tersinkron ke semua perangkat anggota tim. Tetap cadangkan secara berkala untuk keamanan tambahan.</p>
-    <div class="actions"><button class="btn" data-act="export">Cadangkan data (.json)</button><label class="btn" style="cursor:pointer">Pulihkan dari cadangan<input type="file" id="importFile" accept=".json,application/json" class="sr"></label><button class="btn" data-act="sample">Isi data contoh</button><button class="btn danger" data-act="reset">Hapus semua data</button></div></div>`;
+    <div class="actions"><button class="btn" data-act="export">Cadangkan data (.json)</button><label class="btn" style="cursor:pointer">Pulihkan dari cadangan<input type="file" id="importFile" accept=".json,application/json" class="sr"></label><button class="btn" data-act="sample">Isi data contoh</button><button class="btn danger" data-act="reset">Hapus semua data</button></div></div>
+  <div class="panel section about" style="padding:16px"><h2 style="font-size:22px;margin-bottom:6px">${Lw('Tentang aplikasi','About','Tentang aplikasi')}</h2>
+    <dl><dt>${Lw('Versi','Version','Versi')}</dt><dd class="num">ZUI Kontraktor ${APP_VER}</dd><dt>${Lw('Dikelola oleh','Operated by','Dikendalikan oleh')}</dt><dd>ZUI System, ${APP_CO}</dd><dt>${Lw('Bantuan','Support','Bantuan')}</dt><dd>support@zuisystem.com · WhatsApp +62 882-0007-49699</dd></dl>
+    <nav class="legal-l">${legalLinks()}</nav></div>`;
 }
 
 /* ============ Router ============ */

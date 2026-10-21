@@ -1,20 +1,141 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kebijakan Privasi — RHSystem</title>
-    <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }
-        h1 { color: #2c3e50; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kebijakan Privasi · ZUI Kontraktor</title>
+<meta name="description" content="Kebijakan Privasi ZUI Kontraktor, dikelola oleh ZUI System, PT. Zaor Utama Indonesia.">
+<link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+
+/* Halaman legal ZUI Kontraktor: satu kolom dokumen, tab antar dokumen menempel di atas */
+:root{
+  --bg:#ECEEEA;--surface:#FBFBF8;--ink:#1B2333;--muted:#5E6676;--line:#D5D9D1;--soft:#E3E7DF;
+  --accent:#F2B01E;--onaccent:#1B2333;--info:#2A5A9C;--warn:#8F6200;
+  --f-head:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+  --f-body:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141922;--surface:#1C2330;--ink:#E8ECF2;--muted:#9AA3B3;--line:#2D3647;--soft:#252D3C;--info:#82ADE3;--warn:#E5B24A;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141922;--surface:#1C2330;--ink:#E8ECF2;--muted:#9AA3B3;--line:#2D3647;--soft:#252D3C;--info:#82ADE3;--warn:#E5B24A;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.65 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:720px;margin:0 auto;padding-block:28px 56px}
+.hd{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.lg{width:40px;height:40px;border-radius:10px;background:#1B2333;border:1px solid var(--line);display:grid;place-items:center;flex:none}
+.lg svg{width:24px;height:24px;display:block;overflow:visible}
+.lg .z{fill:none;stroke:#fff;stroke-width:11;stroke-linecap:round;stroke-linejoin:round}.lg .u{fill:#F2B01E}
+.hd b{font-family:var(--f-head);font-size:20px;letter-spacing:.1em}
+.hd span{display:block;font-size:12.5px;color:var(--muted);margin-top:-2px}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding-block:10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.tabs a{white-space:nowrap;font-weight:600;font-size:15px;text-decoration:none;color:var(--muted);padding:7px 14px;border-radius:6px;border:1px solid var(--line);background:var(--surface)}
+.tabs a[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.draft{font-size:13.5px;line-height:1.5;color:var(--warn);background:var(--soft);border:1px dashed var(--warn);border-radius:6px;padding:10px 12px;margin:16px 0 0}
+section{padding-top:18px;scroll-margin-top:56px}
+h1{font-family:var(--f-head);font-weight:700;font-size:34px;line-height:1.1;margin:8px 0 2px;text-wrap:balance}
+.eff{font-size:13.5px;color:var(--muted);margin:0 0 14px}
+h2{font-family:var(--f-head);font-weight:700;font-size:21px;line-height:1.2;margin:26px 0 6px;text-wrap:balance}
+p,li{max-width:68ch}
+p{margin:0 0 10px}
+ul{margin:0 0 10px;padding-left:20px}
+li{margin-bottom:4px}
+.ph{background:rgba(242,176,30,.22);border-radius:3px;padding:0 3px}
+.ct{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-top:6px}
+.ct code{font:600 15px var(--f-body);user-select:all}
+.ct button{font:600 13px var(--f-body);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:99px;padding:4px 12px;cursor:pointer}
+a{color:var(--info)}
+:focus-visible{outline:2px solid var(--info);outline-offset:2px}
+.tw{overflow-x:auto;margin:6px 0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600}
+tbody tr:last-child td{border-bottom:0}
+.kv{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:0;margin:8px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.kv dt,.kv dd{margin:0;padding:11px 14px;border-bottom:1px solid var(--line)}
+.kv dt{color:var(--muted);font-size:14px;font-weight:600}
+.kv dt:last-of-type,.kv dd:last-of-type{border-bottom:0}
+.kv code{font:600 15px var(--f-body);user-select:all}
+.kv button{font:600 12px var(--f-body);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:99px;padding:2px 10px;margin-left:6px;cursor:pointer}
+@media (max-width:520px){.kv{grid-template-columns:1fr}.kv dt{border-bottom:0;padding-bottom:0}}
+.key{font-weight:600;border-left:3px solid var(--accent);background:var(--surface);padding:10px 14px;border-radius:0 6px 6px 0}
+.ft{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.back{display:inline-block;font-size:14px;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:14px}
+.back:hover{color:var(--ink)}
+</style>
 </head>
 <body>
-    <h1>Kebijakan Privasi RHSystem</h1>
-    <p>1. Data yang dikumpulkan hanya untuk keperluan operasional aplikasi RHSystem.</p>
-    <p>2. Data tidak akan dibagikan ke pihak ketiga tanpa izin.</p>
-    <p>3. Data disimpan dengan aman di sistem.</p>
-    <p>4. Pengguna dapat meminta penghapusan data kapan saja.</p>
-    <p><strong>RHSystem</strong></p>
+<div class="wrap">
+  <a class="back" href="./">← Kembali ke aplikasi</a>
+  <div class="hd">
+    <div class="lg"><svg viewBox="0 0 100 100"><path class="z" d="M24 20H76L24 68H76"/><rect class="u" x="24" y="84" width="52" height="7" rx="3.5"/></svg></div>
+    <div><b>ZUI KONTRAKTOR</b><span>Kelola Rapi &amp; Proyek Pasti</span></div>
+  </div>
+  <nav class="tabs" aria-label="Dokumen"><a href="terms.html">Syarat</a><a href="privacy.html" aria-current="true">Privasi</a><a href="refund.html">Pengembalian Dana</a><a href="kontak.html">Kontak</a></nav>
+  <section id="privasi">
+    <h1>Kebijakan Privasi</h1>
+    <p class="eff">ZUI Kontraktor versi 26.01 · Berlaku sejak 21 Oktober 2026</p>
+    <p>Kebijakan ini menjelaskan data apa yang dikumpulkan ZUI Kontraktor, untuk apa, dan bagaimana kamu bisa mengaturnya. Kami mengikuti Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi.</p>
+
+    <h2>1. Data yang kami kumpulkan</h2>
+    <ul>
+      <li><strong>Data akun:</strong> nama, email, dan kata sandi. Kata sandi dikelola oleh Firebase Authentication dan tidak bisa kami lihat. Bila kamu masuk dengan Google, kami menerima nama dan email akun Google-mu.</li>
+      <li><strong>Data usaha yang kamu masukkan:</strong> profil dan logo perusahaan, proyek, survei, RAB, penawaran, tagihan, transaksi keuangan, vendor, material, data klien, serta data pekerja seperti nama, nomor telepon, upah, dan kasbon.</li>
+      <li><strong>Foto:</strong> foto progres, laporan harian, dan foto absensi yang diunggah.</li>
+      <li><strong>Lokasi:</strong> titik lokasi proyek saat kamu mengaturnya, dan lokasi pekerja saat absen lewat halaman pekerja. Lokasi hanya diambil saat tombol absen atau atur lokasi ditekan dan izin diberikan.</li>
+      <li><strong>Pengaturan perangkat:</strong> bahasa, tema, dan pilihan “ingat saya” yang disimpan di browser perangkatmu.</li>
+    </ul>
+
+    <h2>2. Untuk apa data dipakai</h2>
+    <ul>
+      <li>Menjalankan fitur aplikasi, seperti menyimpan data, membuat dokumen, dan mencatat absensi.</li>
+      <li>Memverifikasi email, mengirim undangan tim, dan membantu atur ulang kata sandi.</li>
+      <li>Mengelola masa uji coba dan langganan.</li>
+      <li>Menjawab pertanyaan dan permintaan bantuan darimu.</li>
+    </ul>
+    <p>Kami tidak menjual data pribadi dan tidak memakainya untuk iklan.</p>
+
+    <h2>3. Tempat penyimpanan dan keamanan</h2>
+    <p>Data disimpan di layanan Google Firebase (Authentication dan Cloud Firestore), sehingga server penyimpanannya bisa berada di luar Indonesia. Data perusahaan hanya bisa dibuka oleh anggota tim yang diundang, sesuai perannya. Koneksi ke aplikasi dienkripsi dengan HTTPS.</p>
+
+    <h2>4. Berbagi data</h2>
+    <p>Kami hanya berbagi data dengan:</p>
+    <ul>
+      <li>Google, sebagai penyedia infrastruktur penyimpanan dan login.</li>
+      <li>Orang yang kamu beri akses, seperti anggota tim, atau penerima tautan halaman klien dan halaman pekerja.</li>
+      <li>Pihak berwenang, bila diwajibkan oleh hukum.</li>
+    </ul>
+
+    <h2>5. Hakmu</h2>
+    <p>Kamu berhak meminta salinan data pribadimu, memperbaiki data yang salah, menghapus data, dan menarik persetujuan. Sebagian besar bisa kamu lakukan sendiri di aplikasi. Untuk permintaan lain, kirim email ke alamat di bawah. Kami akan menanggapi paling lambat 3 × 24 jam sejak permintaan diterima.</p>
+
+    <h2>6. Lama penyimpanan dan penghapusan</h2>
+    <p>Data disimpan selama akun atau perusahaanmu aktif. Pemilik perusahaan bisa menghapus perusahaan lewat menu Pengaturan; semua data perusahaan itu langsung dihapus permanen dari server. Untuk menghapus akun, kirim email ke support@zuisystem.com dari email akunmu, dan kami memprosesnya paling lambat 7 hari kerja. Salinan cadangan di penyedia infrastruktur, bila ada, terhapus permanen paling lambat 30 hari setelah penghapusan.</p>
+
+    <h2>7. Data pekerja dan klien</h2>
+    <p>Bila kamu mencatat data pekerja atau klien, kamu yang menentukan data tersebut dan bertanggung jawab memberi tahu mereka. Kami memproses data itu atas namamu dan hanya untuk menjalankan aplikasi.</p>
+
+    <h2>8. Pengguna di bawah umur</h2>
+    <p>Aplikasi ini ditujukan untuk usaha dan tidak ditujukan bagi anak di bawah 18 tahun.</p>
+
+    <h2>9. Perubahan kebijakan</h2>
+    <p>Bila kebijakan ini berubah, kami akan memperbarui tanggal berlaku dan memberi tahu perubahan penting di aplikasi atau lewat email.</p>
+
+    <h2>10. Hubungi kami</h2>
+    <p>Pertanyaan atau permintaan soal data pribadi bisa dikirim ke <strong>support@zuisystem.com</strong>. Alamat lengkap ada di <a href="kontak.html">Kontak &amp; Alamat</a>.</p>
+  </section>
+  <p class="ft">© 2026 ZUI System · PT. Zaor Utama Indonesia · Dsn. Togur Dajah, Sotabar, Pasean, Pamekasan, Jawa Timur 69356</p>
+</div>
+<script>
+document.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){
+  var t=b.dataset.copy,c=b.previousElementSibling,done=function(){b.textContent='Tersalin';setTimeout(function(){b.textContent='Salin'},1500)},
+  sel=function(){var r=document.createRange();r.selectNodeContents(c);var s=getSelection();s.removeAllRanges();s.addRange(r)};
+  try{navigator.clipboard.writeText(t).then(done,sel)}catch(e){sel()}})});
+</script>
 </body>
 </html>
