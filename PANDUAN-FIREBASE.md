@@ -121,3 +121,11 @@ Setelah itu:
 - **Akun admin langganan** diatur di dua tempat dan harus sama: `superAdmins` di `config.js` dan fungsi `superAdmin()` di `firestore.rules`. Bawaannya `admin.zuisystem@gmail.com`. Akun ini harus punya perusahaan sendiri di aplikasi agar bisa membuka menu **Admin langganan**.
 - Langkah pertama setelah memasang: masuk dengan akun admin → **Admin langganan → Perusahaan** → tandai perusahaanmu sendiri **Gratis selamanya**. Lalu buka tab **Harga & QRIS**: unggah gambar QRIS, isi nomor WhatsApp admin, dan cek harga.
 - Pelanggan membayar lewat menu **Upgrade** (di bawah, dekat Pengaturan), mengisi nomor referensi, lalu kamu menekan **Aktifkan** di tab **Permintaan**. Masa aktif ditambahkan dari tanggal berakhir yang sekarang (atau dari hari ini kalau sudah lewat).
+
+## Pembayaran otomatis iPaymu (versi 13)
+
+- Pelanggan **Rupiah** membayar lewat iPaymu (QRIS, virtual account bank, e-wallet) dan paketnya **aktif otomatis** setelah lunas. Pelanggan **Ringgit** tetap memakai DuitNow + nomor referensi + cek admin seperti di atas.
+- Pembayaran diproses oleh Cloudflare Worker (gratis). API Key iPaymu dan kunci service account Firebase hanya disimpan sebagai Secret di Cloudflare, tidak di kode web.
+- Langkah lengkap (bisa dari HP): **`worker/PANDUAN-IPAYMU.md`**. Tambahan Firestore Rules: **`worker/firestore-rules-langganan.txt`**.
+- Selama `payGateway` di `config.js` masih kosong, aplikasi tetap memakai QRIS manual seperti versi 12.
+- Tombol **Aktifkan** dan **Atur** di **Admin langganan** tetap bisa dipakai sebagai cadangan.

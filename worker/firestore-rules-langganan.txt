@@ -1,0 +1,51 @@
+// ===== Tambahan firestore.rules untuk pembayaran iPaymu =====
+// File firestore.rules lengkap tidak ada di repo ini, jadi yang di bawah adalah potongan
+// untuk digabung ke rules yang sekarang terpasang di Firebase Console → Firestore Database → Rules.
+// Langkahnya ada di worker/PANDUAN-IPAYMU.md bagian E.
+//
+// Worker Cloudflare menulis ke Firestore memakai service account, jadi TIDAK terkena rules ini.
+// Rules ini hanya untuk aplikasi web (pelanggan dan admin) supaya pelanggan tidak bisa
+// mengaktifkan paket sendiri.
+
+// --- 1) Tempel dua fungsi ini di dalam blok `match /databases/{database}/documents { ... }`,
+//        di dekat fungsi superAdmin() yang sudah ada.
+
+    // Kolom langganan di dokumen perusahaan yang hanya boleh diubah admin ZUI atau Worker.
+    function subKeys() { return ['plan', 'until', 'free']; }
+    function subUntouched() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(subKeys().concat(['created_at']));
+    }
+
+// --- 2) Di `match /companies/{cid} { ... }`, tambahkan syarat pada aturan create dan update
+//        yang SUDAH ADA (jangan hapus syarat lamanya, cukup tambahkan `&& ...`):
+
+      allow create: if /* syarat lama */
+                    && !request.resource.data.keys().hasAny(subKeys())
+                    && request.resource.data.created_at == request.time;
+
+      allow update: if /* syarat lama */
+                    && (superAdmin() || subUntouched());
+
+//    Kalau aturan lamanya berbentuk `allow write: if ...`, pecah dulu menjadi
+//    `allow create`, `allow update`, dan `allow delete` dengan syarat lama yang sama,
+//    lalu tambahkan syarat di atas pada create dan update.
+
+// --- 3) Di `match /subreqs/{id} { ... }`, aturan create untuk pelanggan ditambah syarat berikut,
+//        dan update/delete hanya untuk admin ZUI:
+
+      allow create: if /* syarat lama */
+                    && request.resource.data.status == 'wait'
+                    && request.resource.data.get('method', '') != 'ipaymu';
+      allow update, delete: if superAdmin();
+
+//    Aturan read untuk subreqs biarkan seperti sekarang (pelanggan membaca riwayat
+//    perusahaannya sendiri, admin membaca semua).
+
+// --- 4) Pastikan `zconfig/{doc}` (harga paket) hanya bisa ditulis admin ZUI, karena Worker
+//        mengambil harga Rupiah dari zconfig/pay. Kalau blok ini sudah ada, cukup pastikan
+//        baris `allow write` hanya `superAdmin()`; jangan menambah blok kedua.
+
+    match /zconfig/{doc} {
+      allow read: if request.auth != null;
+      allow write: if superAdmin();
+    }

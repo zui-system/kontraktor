@@ -23,6 +23,14 @@ window.MANDOR_CONFIG = {
   // Samakan dengan daftar di fungsi superAdmin() pada firestore.rules.
   superAdmins: ["admin.zuisystem@gmail.com"],
 
+  // Alamat Cloudflare Worker pembayaran iPaymu (lihat worker/PANDUAN-IPAYMU.md), contoh:
+  // payGateway: "https://zui-bayar.namamu.workers.dev",
+  // Kosongkan "" agar pelanggan Rupiah kembali memakai QRIS manual. Pelanggan Ringgit selalu memakai DuitNow manual.
+  payGateway: "",
+  // Selama uji coba, hanya email di sini yang melihat tombol Bayar iPaymu; yang lain tetap QRIS manual.
+  // Kosongkan [] agar semua pelanggan Rupiah memakai iPaymu.
+  payGatewayTesters: [],
+
   // Bagian di bawah ini sama seperti sebelumnya. Salin dari config.js lama bila kamu sudah mengisinya.
   tagline: "Aplikasi Kontraktor",
   showLanding: true,
