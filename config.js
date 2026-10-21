@@ -29,7 +29,7 @@ window.MANDOR_CONFIG = {
   payGateway: "https://zui-bayar.info-zuisystem.workers.dev",
   // Selama uji coba, hanya email di sini yang melihat tombol Bayar iPaymu; yang lain tetap QRIS manual.
   // Kosongkan [] agar semua pelanggan Rupiah memakai iPaymu.
-  payGatewayTesters: ["sahhori86@gmail.com"],
+  payGatewayTesters: ["demo.zuisystem@gmail.com"],
 
   // Bagian di bawah ini sama seperti sebelumnya. Salin dari config.js lama bila kamu sudah mengisinya.
   tagline: "Aplikasi Kontraktor",
