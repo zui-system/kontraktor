@@ -26,7 +26,7 @@ Pemilik perusahaan di aplikasi bisa mengundang anggota tim dan mengatur perannya
 
 - Perusahaan baru mendapat masa uji coba gratis selama 14 hari.
 - Setelah masa uji coba, kamu bisa memilih paket Starter, Pro, atau Bisnis untuk 1, 6, atau 12 bulan. Harga berlaku per perusahaan dan ditampilkan di aplikasi.
-- Pembayaran dilakukan lewat QRIS. Paket aktif setelah admin mengecek pembayaranmu. Langganan tidak diperpanjang otomatis.
+- Pembayaran dalam Rupiah dilakukan lewat iPaymu (QRIS, virtual account bank, atau e-wallet) dan paket aktif otomatis setelah pembayaran berhasil. Pembayaran dalam Ringgit dilakukan lewat DuitNow, dan paket aktif setelah admin mengecek pembayaranmu. Langganan tidak diperpanjang otomatis.
 - Jika masa langganan habis, data tetap aman dan bisa dilihat, tetapi tidak bisa diubah sampai diperpanjang.
 - Langganan yang sudah aktif tidak dapat dibatalkan dan pembayarannya tidak dapat dikembalikan, kecuali karena kesalahan pembayaran sesuai Kebijakan Pengembalian Dana.
 
@@ -96,6 +96,8 @@ Data disimpan di layanan Google Firebase (Authentication dan Cloud Firestore), s
 Kami hanya berbagi data dengan:
 
 - Google, sebagai penyedia infrastruktur penyimpanan dan login.
+- iPaymu, sebagai penyedia pembayaran langganan dalam Rupiah. iPaymu menerima nama perusahaan, email, dan nomor telepon perusahaan (bila diisi) untuk memproses pembayaran. Data kartu, rekening, atau e-wallet kamu dimasukkan langsung di halaman iPaymu dan tidak kami simpan.
+- Cloudflare, sebagai server perantara yang membuat transaksi pembayaran dan mencatat status langganan.
 - Orang yang kamu beri akses, seperti anggota tim, atau penerima tautan halaman klien dan halaman pekerja.
 - Pihak berwenang, bila diwajibkan oleh hukum.
 
@@ -151,7 +153,7 @@ Pengembalian dana hanya berlaku untuk kesalahan pembayaran berikut:
 
 - **Pembayaran ganda:** kamu membayar dua kali untuk tagihan yang sama. Kelebihannya dikembalikan penuh.
 - **Kelebihan bayar:** jumlah yang dibayar lebih besar dari harga paket. Selisihnya dikembalikan.
-- **Paket tidak diaktifkan:** paket belum aktif dalam 3 × 24 jam setelah kamu mengirim bukti bayar yang benar, dan kamu memilih membatalkan. Pembayaran dikembalikan penuh.
+- **Paket tidak diaktifkan:** paket belum aktif dalam 3 × 24 jam setelah pembayaranmu lewat iPaymu berhasil, atau setelah kamu mengirim bukti bayar DuitNow yang benar, dan kamu memilih membatalkan. Pembayaran dikembalikan penuh.
 
 ## 4. Pembayaran yang tidak bisa dikembalikan
 
@@ -159,14 +161,14 @@ Pengembalian dana hanya berlaku untuk kesalahan pembayaran berikut:
 - Sisa masa langganan bila kamu berhenti memakai aplikasi di tengah periode.
 - Pembatalan paket atau penurunan ke paket yang lebih murah selama masa langganan.
 - Akun atau perusahaan yang ditutup karena melanggar Syarat Layanan.
-- Pembayaran yang dikirim ke tujuan selain QRIS resmi ZUI Kontraktor.
+- Pembayaran yang dikirim ke tujuan selain halaman pembayaran iPaymu yang dibuka dari aplikasi ZUI Kontraktor atau DuitNow resmi ZUI Kontraktor.
 
 ## 5. Cara mengajukan
 
 Kirim email ke **support@zuisystem.com** dengan judul “Pengembalian Dana” dan sertakan:
 
 - nama perusahaan dan email akun,
-- nomor referensi dan tanggal pembayaran, serta jumlah yang dibayar,
+- nomor transaksi iPaymu atau nomor referensi DuitNow, tanggal pembayaran, serta jumlah yang dibayar,
 - alasan pengajuan,
 - nama bank atau e-wallet, nomor rekening, dan nama pemilik rekening untuk menerima dana.
 
