@@ -4,9 +4,9 @@
 
 # Syarat Layanan
 
-*ZUI Kontraktor versi 26.01 · Berlaku sejak 21 Oktober 2026*
+*ZUI Kontraktor versi 26.01 · Berlaku sejak 23 Oktober 2026*
 
-Syarat ini mengatur penggunaan aplikasi ZUI Kontraktor (“aplikasi”) yang dikelola oleh ZUI System, PT. Zaor Utama Indonesia (“kami”). Dengan membuat akun atau memakai aplikasi, kamu menyetujui syarat ini.
+Syarat ini mengatur penggunaan aplikasi ZUI Kontraktor (“aplikasi”) yang dikelola oleh ZUI System (“kami”). Dengan membuat akun atau memakai aplikasi, kamu menyetujui syarat ini.
 
 ## 1. Layanan kami
 
@@ -66,7 +66,7 @@ Lihat Kontak & Alamat.
 
 # Kebijakan Privasi
 
-*ZUI Kontraktor versi 26.01 · Berlaku sejak 21 Oktober 2026*
+*ZUI Kontraktor versi 26.01 · Berlaku sejak 23 Oktober 2026*
 
 Kebijakan ini menjelaskan data apa yang dikumpulkan ZUI Kontraktor, untuk apa, dan bagaimana kamu bisa mengaturnya. Kami mengikuti Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi.
 
@@ -127,7 +127,7 @@ Pertanyaan atau permintaan soal data pribadi bisa dikirim ke **support@zuisystem
 
 # Kebijakan Pengembalian Dana
 
-*ZUI Kontraktor versi 26.01 · Berlaku sejak 21 Oktober 2026*
+*ZUI Kontraktor versi 26.01 · Berlaku sejak 23 Oktober 2026*
 
 Kebijakan ini menjelaskan aturan pengembalian dana untuk pembayaran langganan ZUI Kontraktor.
 
@@ -182,9 +182,9 @@ Kirim email ke **support@zuisystem.com** dengan judul “Pengembalian Dana” da
 
 *ZUI Kontraktor versi 26.01*
 
-ZUI Kontraktor dikelola oleh ZUI System, PT. Zaor Utama Indonesia.
+ZUI Kontraktor dikelola oleh ZUI System.
 
-- **Perusahaan:** PT. Zaor Utama Indonesia
+- **Pengelola:** ZUI System
 - **Alamat:** Dsn. Togur Dajah, Sotabar, Pasean, Pamekasan, Jawa Timur 69356, Indonesia
 - **Bantuan & pengembalian dana:** support@zuisystem.com
 - **Informasi umum & kerja sama:** info@zuisystem.com
@@ -194,4 +194,4 @@ ZUI Kontraktor dikelola oleh ZUI System, PT. Zaor Utama Indonesia.
 
 ---
 
-© 2026 ZUI System · PT. Zaor Utama Indonesia · Dsn. Togur Dajah, Sotabar, Pasean, Pamekasan, Jawa Timur 69356
+© 2026 ZUI System · www.zuisystem.com · Dsn. Togur Dajah, Sotabar, Pasean, Pamekasan, Jawa Timur 69356
