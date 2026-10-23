@@ -511,7 +511,7 @@ label.btn:focus-within{outline:2px solid var(--info);outline-offset:2px}
 <rect class="w b" x="305" y="90" width="10" height="5" filter="url(#splgl)" style="animation-delay:8.2s"/><rect class="w r" x="323" y="110" width="10" height="5" filter="url(#splgl)" style="animation-delay:8.6s"/><rect class="w y" x="305" y="150" width="10" height="5" filter="url(#splgl)" style="animation-delay:8.8s"/><rect class="w b" x="323" y="170" width="10" height="5" filter="url(#splgl)" style="animation-delay:9s"/><rect class="w r" x="352" y="168" width="18" height="5" filter="url(#splgl)" style="animation-delay:9.2s"/>
 <path class="s d" pathLength="1" style="animation-delay:6.4s" d="M150 200L154 190L158 200M160 200L164 190L168 200"/><circle class="w y bl" cx="158" cy="184" r="1.6" filter="url(#splgl)"/>
 <path class="s d" pathLength="1" style="animation-delay:5s" d="M-700 200H1100"/></svg><i class="dt"></i>
-<div class="co">PT. Zaor Utama Indonesia</div><div class="sp"></div><div class="ld" id="spld">Memuat…</div></div>
+<div class="co">www.zuisystem.com</div><div class="sp"></div><div class="ld" id="spld">Memuat…</div></div>
 <script>(function(){window.splEnd=function(){var e=document.getElementById('spl');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(function(){e.remove()},900)};
 var nv=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0],again=false;
 try{again=sessionStorage.getItem('zui.spl')==='1'||(nv&&nv.type==='reload');sessionStorage.setItem('zui.spl','1')}catch(e){again=nv&&nv.type==='reload'}
@@ -1170,7 +1170,7 @@ async function showCompanySetup(){
   <div class="actions"><button class="btn" data-act="check-invites">Cek undangan</button><button class="btn" data-act="logout">Keluar dari akun</button></div>`);
 }
 
-const APP_VER='26.01',APP_CO='PT. Zaor Utama Indonesia';
+const APP_VER='26.01',APP_CO='ZUI System';
 const legalLinks=()=>[['terms.html',Lw('Syarat Layanan','Terms of Service','Syarat Perkhidmatan')],['privacy.html',Lw('Kebijakan Privasi','Privacy Policy','Dasar Privasi')],['refund.html',Lw('Pengembalian Dana','Refund Policy','Pemulangan Wang')],['kontak.html',Lw('Kontak','Contact','Hubungi')]].map(([h,t])=>`<a href="${h}" target="_blank" rel="noopener">${t}</a>`).join('<span aria-hidden="true">·</span>');
 const LANDING_ON=false;/* halaman depan/iklan pindah ke web Zui */
 const PCFG=Object.assign({trialDays:14,yearlyMonths:10,whatsapp:'',email:''},_CFG.pricing||{});
@@ -1636,7 +1636,7 @@ function viewPengaturan(){
   <div class="panel section" style="padding:16px"><h2 style="font-size:22px;margin-bottom:6px">Data</h2><p class="muted" style="margin:0 0 12px">Data tersimpan di server dan tersinkron ke semua perangkat anggota tim. Tetap cadangkan secara berkala untuk keamanan tambahan.</p>
     <div class="actions"><button class="btn" data-act="export">Cadangkan data (.json)</button><label class="btn" style="cursor:pointer">Pulihkan dari cadangan<input type="file" id="importFile" accept=".json,application/json" class="sr"></label><button class="btn" data-act="sample">Isi data contoh</button><button class="btn danger" data-act="reset">Hapus semua data</button></div></div>
   <div class="panel section about" style="padding:16px"><h2 style="font-size:22px;margin-bottom:6px">${Lw('Tentang aplikasi','About','Tentang aplikasi')}</h2>
-    <dl><dt>${Lw('Versi','Version','Versi')}</dt><dd class="num">ZUI Kontraktor ${APP_VER}</dd><dt>${Lw('Dikelola oleh','Operated by','Dikendalikan oleh')}</dt><dd>ZUI System, ${APP_CO}</dd><dt>${Lw('Bantuan','Support','Bantuan')}</dt><dd>support@zuisystem.com · WhatsApp +62 882-0007-49699</dd></dl>
+    <dl><dt>${Lw('Versi','Version','Versi')}</dt><dd class="num">ZUI Kontraktor ${APP_VER}</dd><dt>${Lw('Dikelola oleh','Operated by','Dikendalikan oleh')}</dt><dd>${APP_CO}</dd><dt>${Lw('Bantuan','Support','Bantuan')}</dt><dd>support@zuisystem.com · WhatsApp +62 882-0007-49699</dd></dl>
     <nav class="legal-l">${legalLinks()}</nav></div>`;
 }
 
